@@ -96,5 +96,7 @@ describe('repair(item) test', () => {
 	it('should error for durability lower than allowed', () => {
 		item.durability = -1;
 		expect(() => enhancer.repair(item)).toThrow();
+		item.lvl = 10;
+		expect(() => enhancer.repair(item)).toThrow();
 	});
 });
