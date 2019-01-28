@@ -30,6 +30,16 @@ function repairErrors(item) {
 	}
 }
 
+function failureErrors(item) {
+	if (item.lvl <= 7) {
+		if (item.type === '__armor__' && item.lvl <= 5) {
+			throw new Error('armor of lvl 5 and below cannot fail enhancement');
+		} else {
+			throw new Error('armor of lvl7 and below cannot fail enhancment');
+		}
+	}
+}
+
 function increment(item) {
 	const newItem = { ...item };
 	newItem.lvl++;
@@ -62,5 +72,8 @@ module.exports = {
 		const repaired = { ...item };
 		repaired.durability = 100;
 		return repaired;
+	},
+	failure: function(item) {
+		failureErrors(item);
 	}
 };
