@@ -104,11 +104,7 @@ describe('repair(item) test', () => {
 
 describe('failure(item) errors', () => {
 	it('should not fail for weapon up to lvl 5', () => {
-		// let failItem = { ...item };
-		// (failItem.lvl = 5), (failItem.type = '__armor__');
 		expect(() => enhancer.failure({ ...item, lvl: 5, type: '__armor__' })).toThrow();
-		// failItem.lvl = 6;
-		// failItem.type = '__weapon__';
 		expect(() => enhancer.failure({ ...item, lvl: 6, type: '__weapon__' })).toThrow();
 	});
 });

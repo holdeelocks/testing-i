@@ -14,8 +14,6 @@ function commonErrors(item) {
 	if (typeof item.name !== 'string' || typeof item.lvl !== 'number') {
 		throw new Error('name must be string and enhancement must be number');
 	}
-
-	// return item;
 }
 
 function successErrors(item) {
