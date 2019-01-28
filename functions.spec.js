@@ -27,6 +27,10 @@ describe('success(item) testing', () => {
 		item.name = 178;
 		expect(() => enhancer.success(item)).toThrow();
 	});
+	it('should error for more than 20 or less than 0', () => {
+		item.enhancement = 21;
+		expect(() => enhancer.success(item)).toThrow();
+	});
 
 	it('should return a new object', () => {
 		expect(result).toEqual(expected);

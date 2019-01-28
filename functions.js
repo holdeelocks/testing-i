@@ -3,11 +3,14 @@ module.exports = {
 		const newItem = { ...item };
 		const prefixes = ['PRI', 'DUO', 'TRI', 'TET', 'PEN'];
 
-		if (!item.enhancement || !item.name) {
+		if (!item.enhancement || !item.actualName) {
 			throw new Error('item must have enhancement and name properties');
 		}
 		if (typeof item.name !== 'string' || typeof item.enhancement !== 'number') {
 			throw new Error('name must be string and enhancement must be number');
+		}
+		if (newItem.enhancement >= 20 || newItem.enhancement < 0) {
+			throw new Error('enhancement can only be between 0 and 20 inclusive');
 		}
 
 		newItem.enhancement += 1;
