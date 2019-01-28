@@ -9,8 +9,6 @@ const item = {
 	lvl: 17
 };
 
-const result = enhancer.success(item);
-
 const expected = {
 	actualName: 'Weenie Hut Junior Sword',
 	name: '[TRI] Weenie Hut Junior Sword',
@@ -20,51 +18,59 @@ const expected = {
 	lvl: 18
 };
 
-describe('success errors', () => {
+describe('common errors', () => {
 	it('should throw error for no name or enhancement', () => {
 		delete item.name;
 		expect(() => enhancer.success(item)).toThrow();
+		expect(() => enhancer.failure(item)).toThrow();
 	});
 
 	it('should error for wrong input types on name', () => {
 		item.name = 178;
 		expect(() => enhancer.success(item)).toThrow();
+		expect(() => enhancer.failure(item)).toThrow();
 		item.name = '[DUO] Weenie Hut Junior Sword';
 	});
 
-	it('should error for lvl greater than 20 or less than 0', () => {
-		let highLvl = { ...item };
-		highLvl.lvl = 2345;
-		expect(() => enhancer.success(highLvl)).toThrow();
-	});
-
 	it('should return a new object', () => {
-		let output = enhancer.success(item);
-		expect(output).toEqual(expected);
-		expect(result).not.toBe(item);
-		expect(typeof result).toBe('object');
+		expect(enhancer.success(item)).toEqual(expected);
+		expect(enhancer.success(item)).not.toBe(item);
+		expect(typeof enhancer.success(item)).toBe('object');
+
+		expect(enhancer.failure(item)).not.toBe(item);
+		expect(typeof enhancer.failure(item)).toBe('object');
 	});
 });
 
 describe('success(item) testing', () => {
-	it('should return a new object', () => {
-		expect(result).toEqual(expected);
-		expect(result).not.toBe(item);
-		expect(typeof result).toBe('object');
+	describe('input/output errors', () => {
+		it('should error for lvl greater than 20 or less than 0', () => {
+			let highLvl = { ...item };
+			highLvl.lvl = 2345;
+			expect(() => enhancer.success(highLvl)).toThrow();
+		});
 	});
 
-	it('should +1 the item enhancement', () => {
-		expect(result.enhancement).toEqual(expected.enhancement);
-		expect(typeof result.lvl).toBe('number');
-		expect(typeof result.enhancement).toBe('string');
-	});
+	describe('ouput tests', () => {
+		it('should return a new object', () => {
+			expect(enhancer.success(item)).toEqual(expected);
+			expect(enhancer.success(item)).not.toBe(item);
+			expect(typeof enhancer.success(item)).toBe('object');
+		});
 
-	it('should change the display name', () => {
-		expect(result.name).toEqual(expected.name);
-	});
+		it('should +1 the item enhancement', () => {
+			expect(enhancer.success(item).enhancement).toEqual(expected.enhancement);
+			expect(typeof enhancer.success(item).lvl).toBe('number');
+			expect(typeof enhancer.success(item).enhancement).toBe('string');
+		});
 
-	it('should display a prefix not a number', () => {
-		expect(result.name).toEqual(expected.name);
+		it('should change the display name', () => {
+			expect(enhancer.success(item).name).toEqual(expected.name);
+		});
+
+		it('should display a prefix not a number', () => {
+			expect(enhancer.success(item).name).toEqual(expected.name);
+		});
 	});
 });
 
@@ -84,27 +90,37 @@ describe('repair errors', () => {
 	});
 
 	it('should return a new object', () => {
-		let output = enhancer.repair(item);
-
-		expect(output).toEqual(item);
-		expect(output).not.toBe(item);
-		expect(typeof result).toBe('object');
+		expect(enhancer.repair(item)).toEqual(item);
+		expect(enhancer.repair(item)).not.toBe(item);
+		expect(typeof enhancer.repair(item)).toBe('object');
 	});
 });
 
 describe('repair(item) test', () => {
 	it('should output durability 100', () => {
-		expect(result.durability).toEqual(expected.durability);
+		expect(enhancer.repair(item).durability).toEqual(expected.durability);
 	});
 });
 
 describe('failure(item) errors', () => {
 	it('should not fail for weapon up to lvl 5', () => {
-		let failItem = { ...item };
-		(failItem.lvl = 5), (failItem.type = '__armor__');
-		expect(() => enhancer.failure(failItem)).toThrow();
-		failItem.lvl = 6;
-		failItem.type = '__weapon__';
-		expect(() => enhancer.failure(failItem)).toThrow();
+		// let failItem = { ...item };
+		// (failItem.lvl = 5), (failItem.type = '__armor__');
+		expect(() => enhancer.failure({ ...item, lvl: 5, type: '__armor__' })).toThrow();
+		// failItem.lvl = 6;
+		// failItem.type = '__weapon__';
+		expect(() => enhancer.failure({ ...item, lvl: 6, type: '__weapon__' })).toThrow();
+	});
+});
+
+describe('failure(item) tests', () => {
+	it('should -5 durability for lvls 7-14', () => {
+		expect(enhancer.failure({ ...item, lvl: 8 }).durability).toBe(95);
+		expect(enhancer.failure({ ...item, lvl: 13, durability: 54 }).durability).toBe(49);
+	});
+
+	it('should -10 for lvls 15-20', () => {
+		expect(enhancer.failure({ ...item, lvl: 17 }).durability).toBe(95);
+		expect(enhancer.failure({ ...item, lvl: 15, durability: 66 }).durability).toBe(61);
 	});
 });

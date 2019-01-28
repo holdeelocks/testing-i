@@ -1,4 +1,12 @@
-function errorCheck(item) {
+const prefixes = {
+	16: 'PRI',
+	17: 'DUO',
+	18: 'TRI',
+	19: 'TET',
+	20: 'PEN'
+};
+
+function commonErrors(item) {
 	if (!item.lvl || !item.actualName) {
 		throw new Error('item must have enhancement and name properties');
 	}
@@ -7,11 +15,13 @@ function errorCheck(item) {
 		throw new Error('name must be string and enhancement must be number');
 	}
 
-	if (item.lvl >= 20 || item.lvl < 0) {
-		throw new Error('enhancement can only be between 0 and 20 inclusive');
-	}
-
 	// return item;
+}
+
+function successErrors(item) {
+	if (item.lvl >= 20 || item.lvl < 0) {
+		throw new Error('enhancement lvl can only be between 0 and 20 inclusive');
+	}
 }
 
 function repairErrors(item) {
@@ -34,13 +44,14 @@ function failureErrors(item) {
 	if (item.lvl <= 7) {
 		if (item.type === '__armor__' && item.lvl <= 5) {
 			throw new Error('armor of lvl 5 and below cannot fail enhancement');
-		} else {
-			throw new Error('armor of lvl7 and below cannot fail enhancment');
+		}
+		if (item.type === '__weapon__') {
+			throw new Error('armor of lvl 7 and below cannot fail enhancment');
 		}
 	}
 }
 
-function increment(item) {
+function enhance(item) {
 	const newItem = { ...item };
 	newItem.lvl++;
 
@@ -54,18 +65,26 @@ function increment(item) {
 	return newItem;
 }
 
-const prefixes = {
-	16: 'PRI',
-	17: 'DUO',
-	18: 'TRI',
-	19: 'TET',
-	20: 'PEN'
-};
+function enhanceFail(item) {
+	let newItem = { ...item };
+	if (0 <= item.lvl <= 14) {
+		newItem.durability -= 5;
+	} else {
+		newItem.durability -= 10;
+		if (newItem.lvl > 16) {
+			newItem.lvl--;
+			newItem.enhancement = prefixes[newItem.lvl];
+			newItem.name = `[${newItem.enhancement}]` + newItem.actualName;
+		}
+	}
+	return newItem;
+}
 
 module.exports = {
 	success: function(item) {
-		errorCheck(item);
-		return increment(item);
+		commonErrors(item);
+		successErrors(item);
+		return enhance(item);
 	},
 	repair: function(item) {
 		repairErrors(item);
@@ -74,6 +93,8 @@ module.exports = {
 		return repaired;
 	},
 	failure: function(item) {
+		commonErrors(item);
 		failureErrors(item);
+		return enhanceFail(item);
 	}
 };
