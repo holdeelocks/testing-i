@@ -8,10 +8,14 @@ function errorCheck(item) {
 	}
 
 	if (item.lvl >= 20 || item.lvl < 0) {
-		return new Error('enhancement can only be between 0 and 20 inclusive');
+		throw new Error('enhancement can only be between 0 and 20 inclusive');
 	}
 
-	if (0 <= item.level <= 14 && item.durability <= 20) {
+	// return item;
+}
+
+function repairErrors(item) {
+	if (0 <= item.lvl <= 14 && item.durability <= 20) {
 		throw new Error('durability cannot be less than 20 when item enhancement between +0 and +14');
 	}
 
@@ -21,12 +25,14 @@ function errorCheck(item) {
 		);
 	}
 
-	// return item;
+	if (item.durability > 100) {
+		throw new Error('durability has a max of 100');
+	}
 }
 
 function increment(item) {
 	const newItem = { ...item };
-	newItem.lvl += 1;
+	newItem.lvl++;
 
 	if (newItem.lvl < 16) {
 		newItem.enhancement = `+${newItem.lvl}`;
@@ -52,6 +58,9 @@ module.exports = {
 		return increment(item);
 	},
 	repair: function(item) {
-		errorCheck(item);
+		repairErrors(item);
+		const repaired = { ...item };
+		repaired.durability = 100;
+		return repaired;
 	}
 };
