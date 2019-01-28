@@ -120,7 +120,16 @@ describe('failure(item) tests', () => {
 	});
 
 	it('should -10 for lvls 15-20', () => {
-		expect(enhancer.failure({ ...item, lvl: 17 }).durability).toBe(95);
+		expect(enhancer.failure({ ...item, lvl: 17, durability: 100 }).durability).toBe(90);
 		expect(enhancer.failure({ ...item, lvl: 15, durability: 66 }).durability).toBe(61);
+	});
+
+	it('should subtract lvl for 17-20', () => {
+		expect(enhancer.failure({ ...item, lvl: 19 }).lvl).toBe(18);
+		expect(enhancer.failure({ ...item, lvl: 19 }).enhancement).toBe('TRI');
+		expect(enhancer.failure({ ...item, lvl: 19 }).name).toBe('[TRI] Weenie Hut Junior Sword');
+		expect(enhancer.failure({ ...item, lvl: 17 }).lvl).toBe(16);
+		expect(enhancer.failure({ ...item, lvl: 17 }).enhancement).toBe('PRI');
+		expect(enhancer.failure({ ...item, lvl: 17 }).name).toBe('[PRI] Weenie Hut Junior Sword');
 	});
 });

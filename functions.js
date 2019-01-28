@@ -46,7 +46,7 @@ function failureErrors(item) {
 			throw new Error('armor of lvl 5 and below cannot fail enhancement');
 		}
 		if (item.type === '__weapon__') {
-			throw new Error('armor of lvl 7 and below cannot fail enhancment');
+			throw new Error('weapon of lvl 7 and below cannot fail enhancment');
 		}
 	}
 }
@@ -66,18 +66,18 @@ function enhance(item) {
 }
 
 function enhanceFail(item) {
-	let newItem = { ...item };
-	if (0 <= item.lvl <= 14) {
-		newItem.durability -= 5;
+	const failItem = { ...item };
+	if (failItem.lvl > 16) {
+		failItem.durability -= 10;
+		failItem.lvl = item.lvl - 1;
+		failItem.enhancement = prefixes[failItem.lvl];
+		failItem.name = `[${failItem.enhancement}] ` + failItem.actualName;
+	} else if (0 <= failItem.lvl <= 14) {
+		failItem.durability -= 5;
 	} else {
-		newItem.durability -= 10;
-		if (newItem.lvl > 16) {
-			newItem.lvl--;
-			newItem.enhancement = prefixes[newItem.lvl];
-			newItem.name = `[${newItem.enhancement}]` + newItem.actualName;
-		}
+		failItem.durability -= 10;
 	}
-	return newItem;
+	return failItem;
 }
 
 module.exports = {
