@@ -1,8 +1,6 @@
 const enhancer = require('./functions');
 
 describe('success(item) testing', () => {
-	// const prefixes = ['PRI', 'DUO', 'TRI', 'TET', 'PEN'];
-
 	const item = {
 		actualName: 'Weenie Hut Junior Sword',
 		name: '[DUO] Weenie Hut Junior Sword',
@@ -10,6 +8,9 @@ describe('success(item) testing', () => {
 		durability: 100,
 		enhancement: 17
 	};
+
+	const result = enhancer.success(item);
+
 	const expected = {
 		actualName: 'Weenie Hut Junior Sword',
 		name: '[TRI] Weenie Hut Junior Sword',
@@ -18,20 +19,29 @@ describe('success(item) testing', () => {
 		enhancement: 18
 	};
 
-	const result = enhancer.success(item);
+	it('should throw error for no name or enhancement', () => {
+		delete item.name;
+		expect(() => enhancer.success(item)).toThrow();
+	});
+	it('should error for wrong input types', () => {
+		item.name = 178;
+		expect(() => enhancer.success(item)).toThrow();
+	});
 
 	it('should return a new object', () => {
 		expect(result).toEqual(expected);
-		// expect(result).toEqual(expected);
+		expect(result).not.toBe(item);
+		expect(typeof result).toBe('object');
 	});
 	it('should +1 the item enhancement', () => {
-		const expected = enhancer.success(item);
-		expect(expected.enhancement).toEqual(item.enhancement + 1);
+		expect(result.enhancement).toEqual(expected.enhancement);
+		expect(typeof result.enhancement).toBe('number');
 	});
 	it('should change the display name', () => {
-		expect(expected.name).not.toEqual(item.name);
+		expect(result.name).toEqual(expected.name);
 	});
 	it('should display a prefix not a number', () => {
-		// expected(prefixes).toContain(expected.)
+		// const name = '[TRI] Weenie Hut Junior Sword';
+		expect(result.name).toEqual(expected.name);
 	});
 });
