@@ -1,0 +1,15 @@
+{
+	"name": "testing-i",
+	"version": "1.0.0",
+	"main": "index.js",
+	"repository": "git@github.com:holdeelocks/testing-i.git",
+	"author": "Holden B <holden.bucher.92@gmail.com>",
+	"license": "MIT",
+	"scripts": {
+		"test": "jest --watch"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"jest": "^24.0.0"
+	}
+}
